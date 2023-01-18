@@ -1,0 +1,3131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Aetius Lee">
+<meta name="dcterms.date" content="2023-01-13">
+<meta name="description" content="Analysis of bike sales data.">
+
+<title>Most interesting blog on Earth! - Bike sales analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Most interesting blog on Earth!</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">Aetius Lee</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ShiYang1101"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://linkedin.com/in/shi-yang-lee"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Bike sales analysis</h1>
+                  <div>
+        <div class="description">
+          Analysis of bike sales data.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">EDA</div>
+                <div class="quarto-category">Statistical Analysis</div>
+                <div class="quarto-category">Clustering</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Aetius Lee </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 13, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="cycle-sale-analysis" class="level1">
+<h1>Cycle sale analysis</h1>
+<p>This is a notebook preceeding after SQL script and Tableau analysis. The main focus on this notebook is to perform statistical analysis, to determine if a relation between predoctors exists statistically.</p>
+<p>Clustering analysis is also performed to determine if customers with certain demographic information can be grouped. <img src="download.webp" class="img-fluid"></p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:06:52.550778Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:06:52.549679Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:06:52.555665Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:06:52.554457Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:06:52.550723Z&quot;}" data-trusted="true" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels <span class="im">as</span> sm</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:06:52.558349Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:06:52.557626Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:04.080420Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:04.079004Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:06:52.558312Z&quot;}" data-trusted="true" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install optuna</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s have a look at the dataframe we will be working with:</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:05.169888Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:05.169471Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:05.284465Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:05.283240Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:05.169849Z&quot;}" data-trusted="true" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sales_df <span class="op">=</span> pd.read_csv(<span class="st">'./sales_cleaned.csv'</span>, index_col<span class="op">=</span><span class="st">'index'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>sales_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Date</th>
+      <th>Year</th>
+      <th>Month</th>
+      <th>Customer Age</th>
+      <th>Customer Gender</th>
+      <th>Country</th>
+      <th>State</th>
+      <th>Product Category</th>
+      <th>Sub Category</th>
+      <th>Quantity</th>
+      <th>Unit Cost</th>
+      <th>Unit Price</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Day</th>
+      <th>Month_numeric</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>02/19/16</td>
+      <td>2016</td>
+      <td>February</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>1.0</td>
+      <td>80.00</td>
+      <td>109.000000</td>
+      <td>80.0</td>
+      <td>109.0</td>
+      <td>29</td>
+      <td>19</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>02/20/16</td>
+      <td>2016</td>
+      <td>February</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Clothing</td>
+      <td>Gloves</td>
+      <td>2.0</td>
+      <td>24.50</td>
+      <td>28.500000</td>
+      <td>49.0</td>
+      <td>57.0</td>
+      <td>8</td>
+      <td>20</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>02/27/16</td>
+      <td>2016</td>
+      <td>February</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>3.0</td>
+      <td>3.67</td>
+      <td>5.000000</td>
+      <td>11.0</td>
+      <td>15.0</td>
+      <td>4</td>
+      <td>27</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>03/12/16</td>
+      <td>2016</td>
+      <td>March</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>2.0</td>
+      <td>87.50</td>
+      <td>116.500000</td>
+      <td>175.0</td>
+      <td>233.0</td>
+      <td>58</td>
+      <td>12</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>03/12/16</td>
+      <td>2016</td>
+      <td>March</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>3.0</td>
+      <td>35.00</td>
+      <td>41.666667</td>
+      <td>105.0</td>
+      <td>125.0</td>
+      <td>20</td>
+      <td>12</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:05.287943Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:05.287558Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:05.294867Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:05.293664Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:05.287906Z&quot;}" data-trusted="true" data-execution_count="4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The dataframe has </span><span class="sc">{</span>sales_df<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> rows and </span><span class="sc">{</span>sales_df<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> features"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>The dataframe has 34866 rows and 17 features</code></pre>
+</div>
+</div>
+<p>From the dataframe, we can see that the interesting columns are categorical features: * Countries/States * Product categories/sub-categories * Customer’s gender</p>
+<p>and the numberic features: * Cost * Revenue * Profit * Customer’s age</p>
+<p>ALthough datetime features are also included in the dataframe, we will be ignoring these since the time-series analysis was analysed in our <a href="https://public.tableau.com/views/bikesalesanalysis_16728519380800/Distributionsofunitpricesacrossproductcategories_?:language=en-GB&amp;:display_count=n&amp;:origin=viz_share_link">Tableau</a> and SQL analysis.</p>
+<div class="cell" data-execution_count="5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sales_df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+Int64Index: 34866 entries, 0 to 34865
+Data columns (total 17 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   Date              34866 non-null  object 
+ 1   Year              34866 non-null  int64  
+ 2   Month             34866 non-null  object 
+ 3   Customer Age      34866 non-null  int64  
+ 4   Customer Gender   34866 non-null  object 
+ 5   Country           34866 non-null  object 
+ 6   State             34866 non-null  object 
+ 7   Product Category  34866 non-null  object 
+ 8   Sub Category      34866 non-null  object 
+ 9   Quantity          34866 non-null  float64
+ 10  Unit Cost         34866 non-null  float64
+ 11  Unit Price        34866 non-null  float64
+ 12  Cost              34866 non-null  float64
+ 13  Revenue           34866 non-null  float64
+ 14  net_profit        34866 non-null  int64  
+ 15  Day               34866 non-null  int64  
+ 16  Month_numeric     34866 non-null  int64  
+dtypes: float64(5), int64(5), object(7)
+memory usage: 4.8+ MB</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:05.296926Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:05.296471Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:05.366840Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:05.365943Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:05.296891Z&quot;}" data-trusted="true" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sales_df.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="6">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Year</th>
+      <th>Customer Age</th>
+      <th>Quantity</th>
+      <th>Unit Cost</th>
+      <th>Unit Price</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Day</th>
+      <th>Month_numeric</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+      <td>34866.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>2015.569237</td>
+      <td>36.382895</td>
+      <td>2.002524</td>
+      <td>349.880567</td>
+      <td>389.232485</td>
+      <td>576.004532</td>
+      <td>640.870074</td>
+      <td>64.865542</td>
+      <td>15.667671</td>
+      <td>6.317845</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.495190</td>
+      <td>11.112902</td>
+      <td>0.813936</td>
+      <td>490.015846</td>
+      <td>525.319091</td>
+      <td>690.500395</td>
+      <td>736.650597</td>
+      <td>152.879908</td>
+      <td>8.770677</td>
+      <td>3.465317</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>2015.000000</td>
+      <td>17.000000</td>
+      <td>1.000000</td>
+      <td>0.670000</td>
+      <td>0.666667</td>
+      <td>2.000000</td>
+      <td>2.000000</td>
+      <td>-937.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>2015.000000</td>
+      <td>28.000000</td>
+      <td>1.000000</td>
+      <td>45.000000</td>
+      <td>53.666667</td>
+      <td>85.000000</td>
+      <td>102.000000</td>
+      <td>5.000000</td>
+      <td>8.000000</td>
+      <td>3.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>2016.000000</td>
+      <td>35.000000</td>
+      <td>2.000000</td>
+      <td>150.000000</td>
+      <td>179.000000</td>
+      <td>261.000000</td>
+      <td>319.000000</td>
+      <td>27.000000</td>
+      <td>16.000000</td>
+      <td>6.000000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>2016.000000</td>
+      <td>44.000000</td>
+      <td>3.000000</td>
+      <td>455.000000</td>
+      <td>521.000000</td>
+      <td>769.000000</td>
+      <td>902.000000</td>
+      <td>96.000000</td>
+      <td>23.000000</td>
+      <td>9.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>2016.000000</td>
+      <td>87.000000</td>
+      <td>3.000000</td>
+      <td>3240.000000</td>
+      <td>5082.000000</td>
+      <td>3600.000000</td>
+      <td>5082.000000</td>
+      <td>1842.000000</td>
+      <td>31.000000</td>
+      <td>12.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>It appears that most of the distribution are a long tailed distribution, skewed to the lower end.</p>
+<div class="cell" data-execution_count="7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sns.pairplot(sales_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>&lt;seaborn.axisgrid.PairGrid at 0x7ff808d9a7f0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-8-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:05.368747Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:05.368310Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:05.412806Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:05.411580Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:05.368703Z&quot;}" data-trusted="true" data-execution_count="8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sales_df.duplicated().mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>2.868123673492801e-05</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:05.414696Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:05.414147Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:05.471437Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:05.469905Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:05.414632Z&quot;}" data-trusted="true" data-execution_count="9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sales_df[sales_df.duplicated(keep<span class="op">=</span><span class="va">False</span>)].sort_values([<span class="st">'Date'</span>, <span class="st">'Revenue'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Date</th>
+      <th>Year</th>
+      <th>Month</th>
+      <th>Customer Age</th>
+      <th>Customer Gender</th>
+      <th>Country</th>
+      <th>State</th>
+      <th>Product Category</th>
+      <th>Sub Category</th>
+      <th>Quantity</th>
+      <th>Unit Cost</th>
+      <th>Unit Price</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Day</th>
+      <th>Month_numeric</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>868</th>
+      <td>08/12/15</td>
+      <td>2015</td>
+      <td>August</td>
+      <td>43</td>
+      <td>F</td>
+      <td>Germany</td>
+      <td>Bayern</td>
+      <td>Accessories</td>
+      <td>Bottles and Cages</td>
+      <td>2.0</td>
+      <td>10.0</td>
+      <td>14.0</td>
+      <td>20.0</td>
+      <td>28.0</td>
+      <td>8</td>
+      <td>12</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>869</th>
+      <td>08/12/15</td>
+      <td>2015</td>
+      <td>August</td>
+      <td>43</td>
+      <td>F</td>
+      <td>Germany</td>
+      <td>Bayern</td>
+      <td>Accessories</td>
+      <td>Bottles and Cages</td>
+      <td>2.0</td>
+      <td>10.0</td>
+      <td>14.0</td>
+      <td>20.0</td>
+      <td>28.0</td>
+      <td>8</td>
+      <td>12</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Out of 34866 entries, there was one entry that appears to be duplicated. It is quite possible that one person with the same demographic information purchased the exact same item on the same day. We will leave the duplicated entry as it is only one of them.</p>
+</section>
+<section id="statistical-tests" class="level1">
+<h1>Statistical tests</h1>
+<p>First, let’s investigate the claim of gender having no relation with revenue generated</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:05.473144Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:05.472790Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:06.133900Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:06.132663Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:05.473111Z&quot;}" data-trusted="true" data-execution_count="10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(sales_df[sales_df[<span class="st">'Customer Gender'</span>] <span class="op">==</span> <span class="st">'M'</span>].Revenue, </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span><span class="st">'goldenrod'</span>, alpha <span class="op">=</span> <span class="fl">0.8</span>, label <span class="op">=</span> <span class="st">'Male'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>sns.histplot(sales_df[sales_df[<span class="st">'Customer Gender'</span>] <span class="op">==</span> <span class="st">'F'</span>].Revenue, </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span><span class="st">'lightblue'</span>, alpha <span class="op">=</span> <span class="fl">0.5</span>, label <span class="op">=</span> <span class="st">'Female'</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>plt.xlim((sales_df[<span class="st">'Revenue'</span>].<span class="bu">min</span>(), sales_df[<span class="st">'Revenue'</span>].quantile(<span class="fl">0.99</span>)))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Revenue generated from both gender'</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>From the figure above, we can see that the two distributions from each gender are almost identical.</p>
+<p>However, it apperas that the distributions consist of 3 difference distribution, with a right skewed, long tail distribution (likely to be from product sales with low pricing), and 2 gaussian mixture distributions (centered at 600 and 2200)</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:06.138065Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:06.137677Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:06.146781Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:06.145847Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:06.138031Z&quot;}" data-trusted="true" data-execution_count="11">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sales_df[<span class="st">'Product Category'</span>].unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>array(['Accessories', 'Clothing', 'Bikes'], dtype=object)</code></pre>
+</div>
+</div>
+<p>Coincidently, it apperas that we have exactly 3 different product categories. Let’s investigate if these 3 product correspond to the 3 distributions we see.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:06.151416Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:06.150385Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:06.946648Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:06.945708Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:06.151360Z&quot;}" data-trusted="true" data-execution_count="12">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> prod, color <span class="kw">in</span> <span class="bu">zip</span>(sales_df[<span class="st">'Product Category'</span>].unique(), [<span class="st">'red'</span>, <span class="st">'goldenrod'</span>, <span class="st">'blue'</span>]):</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    sns.histplot(sales_df[sales_df[<span class="st">'Product Category'</span>] <span class="op">==</span> prod][<span class="st">'Revenue'</span>], </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> prod, color<span class="op">=</span>color, alpha <span class="op">=</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>It appers that our guess was wrong, both accessories and cloting made up the right-skewed distribution, whereas the gaussian mixture distributin was from bikes category alone.</p>
+<div class="cell" data-execution_count="13">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>bike_df <span class="op">=</span> sales_df[sales_df[<span class="st">'Product Category'</span>] <span class="op">==</span> <span class="st">'Bikes'</span>]</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(bike_df, x<span class="op">=</span><span class="st">'Revenue'</span>, hue<span class="op">=</span><span class="st">'Sub Category'</span>, bins<span class="op">=</span><span class="dv">30</span>, palette<span class="op">=</span><span class="st">'tab10'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>&lt;AxesSubplot: xlabel='Revenue', ylabel='Count'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-14-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<section id="t-test-on-revenues-generated-for-different-gender." class="level2">
+<h2 class="anchored" data-anchor-id="t-test-on-revenues-generated-for-different-gender.">T-test on revenues generated for different gender.</h2>
+<p>To determine if different gender had different spending habits, we will be running a unpaired t-test to investigate if the two distribution is the same.</p>
+<p>The hypothesis of a unpaired t-test is as follows: <span class="math display">\[H_0: \bar{X} - \bar{Y} = 0\]</span> <span class="math display">\[H_1: \bar{X} - \bar{Y} \neq 0\]</span></p>
+<p>where X and Y are the two distribution compared.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:06.949010Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:06.948020Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:06.970084Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:06.968991Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:06.948971Z&quot;}" data-trusted="true" data-execution_count="14">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ttest_stat, ttest_p <span class="op">=</span> scipy.stats.ttest_ind(sales_df[sales_df[<span class="st">'Customer Gender'</span>] <span class="op">==</span> <span class="st">'M'</span>].Revenue, </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                   sales_df[sales_df[<span class="st">'Customer Gender'</span>] <span class="op">==</span> <span class="st">'F'</span>].Revenue )</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'The p-vale for unpaired t-test for both gender is </span><span class="sc">{</span>ttest_p<span class="sc">:.4f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>The p-vale for unpaired t-test for both gender is 0.9855</code></pre>
+</div>
+</div>
+<p>Indeed, we can see that the p-value is around 0.98, which is highly unlikely that the mean of revenue spent for each gender were different.</p>
+<blockquote class="blockquote">
+<p>However, from the distribution above, we can see that it is highly not normal. Although we do have 34688 entries, and the central limit theorem works in our favour, and the assumption of similar means from any sample drawn from the distribution is the same.</p>
+</blockquote>
+<p>Just to be safe, we will be running a Wilcoxon test (alternative non-parametric t-test).</p>
+</section>
+<section id="mann-whitney-u-test-for-revenues-generated-by-eahc-gender." class="level2">
+<h2 class="anchored" data-anchor-id="mann-whitney-u-test-for-revenues-generated-by-eahc-gender.">Mann-whitney U test for revenues generated by eahc gender.</h2>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:06.971668Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:06.971367Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.016087Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.014705Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:06.971641Z&quot;}" data-trusted="true" data-execution_count="15">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>whitney_stat, whitney_p <span class="op">=</span> scipy.stats.mannwhitneyu(sales_df[sales_df[<span class="st">'Customer Gender'</span>] <span class="op">==</span> <span class="st">'M'</span>].Revenue, </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                   sales_df[sales_df[<span class="st">'Customer Gender'</span>] <span class="op">==</span> <span class="st">'F'</span>].Revenue )</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'The p-vale for unpaired t-test for both gender is </span><span class="sc">{</span>whitney_p<span class="sc">:.4f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>The p-vale for unpaired t-test for both gender is 0.2144</code></pre>
+</div>
+</div>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>Indeed, from the p-value above, we can see that it is still higher than the threshold of 5%.</p>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>There is no statistical significant that each gender had different spending habit!</p>
+</blockquote>
+</blockquote>
+</section>
+</section>
+</section>
+<section id="relation-between-gender-and-product-purchased" class="level1">
+<h1>Relation between gender and product purchased</h1>
+<p>Now that we have determined that the amount spent had no relation to the gender of customers, let’s investigate if there was any difference of product bought for each gender.</p>
+<p>Let’s look at the frequency table for product categories and gender.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.018096Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.017704Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.041970Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.040709Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.018057Z&quot;}" data-trusted="true" data-execution_count="16">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>gender_category_df <span class="op">=</span> sales_df.groupby([<span class="st">'Customer Gender'</span>, <span class="st">'Product Category'</span>])[<span class="st">'Product Category'</span>] <span class="op">\</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                        .count().unstack().T</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>gender_category_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="16">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>Customer Gender</th>
+      <th>F</th>
+      <th>M</th>
+    </tr>
+    <tr>
+      <th>Product Category</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Accessories</th>
+      <td>11042</td>
+      <td>11492</td>
+    </tr>
+    <tr>
+      <th>Bikes</th>
+      <td>3514</td>
+      <td>3579</td>
+    </tr>
+    <tr>
+      <th>Clothing</th>
+      <td>2505</td>
+      <td>2734</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.044184Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.043687Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.303598Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.302358Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.044140Z&quot;}" data-trusted="true" data-execution_count="17">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>gender_category_df.plot(kind <span class="op">=</span> <span class="st">'bar'</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Relation betwwen gender and product categories'</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-18-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>From the table, we can see that for each product cetegory, the distribution was in a similar scale, with slightly more frequency for male’s clothing transaction.</p>
+<p>Although the numbers are quite similar, we still need to convert the corresponding chi2 statistic to our p-value of chi2 distribution, in this case, the degree of freedom (DOF) used will be the parameters in variable’s number of categories:</p>
+<p><span class="math display">\[
+\begin{aligned}
+DOF &amp; = (\text{\# of product categories - 1}) \times (\text{\# of gender categories - 1})
+\\
+DOF &amp; = 2
+\end{aligned}
+\]</span></p>
+<p>We will be using scipy’s chi2 test of independence for contigency tables.</p>
+<p>The hypothesis are as follows:</p>
+<p><span class="math display">\[ H_0 = \text{The relation between variables are independent}\]</span> <span class="math display">\[ H_1 = \text{The relation between batiables are not independent}\]</span></p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.306875Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.306434Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.315808Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.314694Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.306840Z&quot;}" data-trusted="true" data-execution_count="18">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>scipy.stats.chi2_contingency(gender_category_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>(3.7174085431453174,
+ 0.15587447055732034,
+ 2,
+ array([[11026.57528825, 11507.42471175],
+        [ 3470.82180348,  3622.17819652],
+        [ 2563.60290828,  2675.39709172]]))</code></pre>
+</div>
+</div>
+<p>From the above result, we can see that the p-value is 0.1558, which we failed to reject the null hypothesis that gender is independent of product bought.</p>
+<section id="conclusion-1" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion-1">Conclusion</h2>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>There is no statistical significant proof that gender is related to product bought.</p>
+</blockquote>
+</blockquote>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.317510Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.317106Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.327371Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.324688Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.317477Z&quot;}" data-trusted="true" data-execution_count="19">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> chi2_test(df, col1, col2, show_table <span class="op">=</span> <span class="va">True</span>):</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> col1 <span class="kw">in</span> df.columns <span class="kw">and</span> col2 <span class="kw">in</span> df.columns, <span class="st">'Column names provide can not be found in dataframe!'</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    _cont <span class="op">=</span> df.groupby([col1, col2])[col2].count().unstack()</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    _result <span class="op">=</span> scipy.stats.chi2_contingency(_cont)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> show_table:</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'------------------------------'</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Observed contigency table'</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        display(_cont)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'------------------------------'</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Expected frequency table'</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>        display(pd.DataFrame(_result[<span class="op">-</span><span class="dv">1</span>], index <span class="op">=</span> _cont.index, </span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>                    columns <span class="op">=</span> _cont.columns))</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'The p-value of chi2 independence test is </span><span class="sc">{</span>_result[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.329193Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.328767Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.365425Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.364335Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.329154Z&quot;}" data-trusted="true" data-execution_count="20">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>chi2_test(sales_df, <span class="st">'Country'</span>, <span class="st">'Product Category'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>------------------------------
+Observed contigency table</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>Product Category</th>
+      <th>Accessories</th>
+      <th>Bikes</th>
+      <th>Clothing</th>
+    </tr>
+    <tr>
+      <th>Country</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>France</th>
+      <td>3293</td>
+      <td>1152</td>
+      <td>723</td>
+    </tr>
+    <tr>
+      <th>Germany</th>
+      <td>3200</td>
+      <td>1291</td>
+      <td>710</td>
+    </tr>
+    <tr>
+      <th>United Kingdom</th>
+      <td>3986</td>
+      <td>1497</td>
+      <td>938</td>
+    </tr>
+    <tr>
+      <th>United States</th>
+      <td>12055</td>
+      <td>3153</td>
+      <td>2868</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>------------------------------
+Expected frequency table</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>Product Category</th>
+      <th>Accessories</th>
+      <th>Bikes</th>
+      <th>Clothing</th>
+    </tr>
+    <tr>
+      <th>Country</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>France</th>
+      <td>3340.093845</td>
+      <td>1051.357311</td>
+      <td>776.548844</td>
+    </tr>
+    <tr>
+      <th>Germany</th>
+      <td>3361.421844</td>
+      <td>1058.070699</td>
+      <td>781.507457</td>
+    </tr>
+    <tr>
+      <th>United Kingdom</th>
+      <td>4149.911490</td>
+      <td>1306.262634</td>
+      <td>964.825876</td>
+    </tr>
+    <tr>
+      <th>United States</th>
+      <td>11682.572822</td>
+      <td>3677.309356</td>
+      <td>2716.117823</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The p-value of chi2 independence test is 0.0000</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>From the above result, we can see that there was deviation in sales, especially between United States with other countries. Infact, the corresponding p-value is 0, indicating there is a relation between the distribution of product sold and countries.</p>
+</blockquote>
+</blockquote>
+</section>
+</section>
+<section id="clustering-analysis" class="level1">
+<h1>Clustering analysis</h1>
+<p>After we have established that there are no interesting relation between the variables, let’s dive deep into clustering analysis.</p>
+<p>The aim of this section is to analyize customers behaviours, and determine if there are any groups with different spending habits, corresponding to different demographics.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.367663Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.366948Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.389880Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.388691Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.367618Z&quot;}" data-trusted="true" data-execution_count="21">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>sales_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="21">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Date</th>
+      <th>Year</th>
+      <th>Month</th>
+      <th>Customer Age</th>
+      <th>Customer Gender</th>
+      <th>Country</th>
+      <th>State</th>
+      <th>Product Category</th>
+      <th>Sub Category</th>
+      <th>Quantity</th>
+      <th>Unit Cost</th>
+      <th>Unit Price</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Day</th>
+      <th>Month_numeric</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>02/19/16</td>
+      <td>2016</td>
+      <td>February</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>1.0</td>
+      <td>80.00</td>
+      <td>109.000000</td>
+      <td>80.0</td>
+      <td>109.0</td>
+      <td>29</td>
+      <td>19</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>02/20/16</td>
+      <td>2016</td>
+      <td>February</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Clothing</td>
+      <td>Gloves</td>
+      <td>2.0</td>
+      <td>24.50</td>
+      <td>28.500000</td>
+      <td>49.0</td>
+      <td>57.0</td>
+      <td>8</td>
+      <td>20</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>02/27/16</td>
+      <td>2016</td>
+      <td>February</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>3.0</td>
+      <td>3.67</td>
+      <td>5.000000</td>
+      <td>11.0</td>
+      <td>15.0</td>
+      <td>4</td>
+      <td>27</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>03/12/16</td>
+      <td>2016</td>
+      <td>March</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>2.0</td>
+      <td>87.50</td>
+      <td>116.500000</td>
+      <td>175.0</td>
+      <td>233.0</td>
+      <td>58</td>
+      <td>12</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>03/12/16</td>
+      <td>2016</td>
+      <td>March</td>
+      <td>29</td>
+      <td>F</td>
+      <td>United States</td>
+      <td>Washington</td>
+      <td>Accessories</td>
+      <td>Tires and Tubes</td>
+      <td>3.0</td>
+      <td>35.00</td>
+      <td>41.666667</td>
+      <td>105.0</td>
+      <td>125.0</td>
+      <td>20</td>
+      <td>12</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Before we can continue to our analysis, we have to preprocess several things, notice that we have several categorical categories:</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.392569Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.392076Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.407790Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.406258Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.392522Z&quot;}" data-trusted="true" data-execution_count="22">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>sales_df.select_dtypes(<span class="st">'object'</span>).columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>Index(['Date', 'Month', 'Customer Gender', 'Country', 'State',
+       'Product Category', 'Sub Category'],
+      dtype='object')</code></pre>
+</div>
+</div>
+<p>We will be excluding the Date and Month columns, as the purpose is not a time series analysis, and the categorical columns will be one-hot encoded, in order to be feed in to a clustering algorithm.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.410319Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.409878Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.769291Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.767881Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.410276Z&quot;}" data-trusted="true" data-execution_count="23">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer, make_column_selector</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> OneHotEncoder, StandardScaler, MinMaxScaler, MaxAbsScaler</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> DBSCAN</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>From our previous analysis in Tableau, we have singled out that California state and England has some interesting behaviour, which their revenues increased significantly overtime.</p>
+<p>For this reason, we will single out California state and treat it as a seperate entry in the Country column.</p>
+<div class="cell" data-execution_count="24">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>sales_df[<span class="st">'Country_with_California'</span>] <span class="op">=</span> sales_df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: x[<span class="st">'Country'</span>] <span class="cf">if</span> x[<span class="st">'State'</span>] <span class="op">!=</span> <span class="st">'California'</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                                                        <span class="cf">else</span> <span class="st">'California'</span>, axis <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="25">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>sales_df[<span class="st">'Country_with_California'</span>].value_counts().plot(kind<span class="op">=</span><span class="st">'bar'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>&lt;AxesSubplot: &gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-26-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.771219Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.770828Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.779661Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.778312Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.771184Z&quot;}" data-trusted="true" data-execution_count="26">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>unwanted_col <span class="op">=</span> [<span class="st">'Date'</span>, <span class="st">'Year'</span>, <span class="st">'Month'</span>, <span class="st">'Quantity'</span>, <span class="st">'Unit Cost'</span>, <span class="st">'Unit Price'</span>, <span class="st">'Day'</span>, <span class="st">'Month_numeric'</span>, </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'Country'</span>, <span class="st">'Sub Category'</span>, <span class="st">'State'</span>]</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>remaining_col <span class="op">=</span> [x <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">list</span>(sales_df.columns) <span class="cf">if</span> x <span class="kw">not</span> <span class="kw">in</span> unwanted_col]</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>remaining_col</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>['Customer Age',
+ 'Customer Gender',
+ 'Product Category',
+ 'Cost',
+ 'Revenue',
+ 'net_profit',
+ 'Country_with_California']</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.781608Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.781279Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.793569Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.792752Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.781576Z&quot;}" data-trusted="true" data-execution_count="27">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>clustering_df <span class="op">=</span> sales_df[remaining_col]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.795227Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.794775Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.816132Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.814995Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.795198Z&quot;}" data-trusted="true" data-execution_count="28">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>clustering_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="28">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Age</th>
+      <th>Customer Gender</th>
+      <th>Product Category</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Country_with_California</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>80.0</td>
+      <td>109.0</td>
+      <td>29</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Clothing</td>
+      <td>49.0</td>
+      <td>57.0</td>
+      <td>8</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>11.0</td>
+      <td>15.0</td>
+      <td>4</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>175.0</td>
+      <td>233.0</td>
+      <td>58</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>105.0</td>
+      <td>125.0</td>
+      <td>20</td>
+      <td>United States</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.818337Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.818004Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.828215Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.826935Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.818307Z&quot;}" data-trusted="true" data-execution_count="29">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>ct <span class="op">=</span> ColumnTransformer([(<span class="st">'ohe'</span>, OneHotEncoder(), [<span class="st">'Customer Gender'</span>, <span class="st">'Country_with_California'</span>, </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>                            <span class="st">'Product Category'</span>])], </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                        <span class="co"># ('mmscaler', MinMaxScaler(), make_column_selector(dtype_include=['number', 'object']))],</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                       remainder<span class="op">=</span><span class="st">'passthrough'</span>, </span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>                       verbose_feature_names_out<span class="op">=</span><span class="va">False</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.830393Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.829881Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.846541Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.845477Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.830347Z&quot;}" data-trusted="true" data-execution_count="30">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([(<span class="st">'ohe'</span>, ct), </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                (<span class="st">'mascaler'</span>, MaxAbsScaler())])</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                <span class="co"># ('clustering', DBSCAN())])</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.848889Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.848391Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:07.929694Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:07.928717Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.848840Z&quot;}" data-trusted="true" data-execution_count="31">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>clustering_transformed <span class="op">=</span> pipe.fit_transform(clustering_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:07.931528Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:07.931100Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:08.019209Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:08.017951Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:07.931488Z&quot;}" data-trusted="true" data-execution_count="32">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>clustering_tf_df <span class="op">=</span> pd.DataFrame(clustering_transformed, </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                                columns<span class="op">=</span>pipe.get_feature_names_out())</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>clustering_tf_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="32">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Gender_F</th>
+      <th>Customer Gender_M</th>
+      <th>Country_with_California_California</th>
+      <th>Country_with_California_France</th>
+      <th>Country_with_California_Germany</th>
+      <th>Country_with_California_United Kingdom</th>
+      <th>Country_with_California_United States</th>
+      <th>Product Category_Accessories</th>
+      <th>Product Category_Bikes</th>
+      <th>Product Category_Clothing</th>
+      <th>Customer Age</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.333333</td>
+      <td>0.022222</td>
+      <td>0.021448</td>
+      <td>0.015744</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.333333</td>
+      <td>0.013611</td>
+      <td>0.011216</td>
+      <td>0.004343</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.333333</td>
+      <td>0.003056</td>
+      <td>0.002952</td>
+      <td>0.002172</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.333333</td>
+      <td>0.048611</td>
+      <td>0.045848</td>
+      <td>0.031488</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.333333</td>
+      <td>0.029167</td>
+      <td>0.024597</td>
+      <td>0.010858</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>34861</th>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.436782</td>
+      <td>0.569167</td>
+      <td>0.292601</td>
+      <td>-0.305103</td>
+    </tr>
+    <tr>
+      <th>34862</th>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.436782</td>
+      <td>0.644444</td>
+      <td>0.387839</td>
+      <td>-0.189468</td>
+    </tr>
+    <tr>
+      <th>34863</th>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.436782</td>
+      <td>0.569167</td>
+      <td>0.311492</td>
+      <td>-0.252986</td>
+    </tr>
+    <tr>
+      <th>34864</th>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.436782</td>
+      <td>0.569167</td>
+      <td>0.330972</td>
+      <td>-0.199240</td>
+    </tr>
+    <tr>
+      <th>34865</th>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.436782</td>
+      <td>0.644444</td>
+      <td>0.308540</td>
+      <td>-0.408252</td>
+    </tr>
+  </tbody>
+</table>
+<p>34866 rows × 14 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:08.024226Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:08.023886Z&quot;}" data-trusted="true" data-execution_count="33">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>dbs <span class="op">=</span> DBSCAN()</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>dbs_result <span class="op">=</span> dbs.fit(clustering_tf_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>To determine if the clustering is a good representation, we will be using the silhouette_score from sklearn.</p>
+<p>The silhouette score is a metric defined to quantify how well the clustering is performing, by calculating the ratio between</p>
+<ul>
+<li>The mean distance of points in the same cluster (intra-cluster distance)</li>
+<li>Distance from points to nearest other clusters.</li>
+</ul>
+<p>It represents how confidence of the points being in a ‘correct’ cluster.</p>
+<p>For more information, please refer to the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html">sklearn documentation</a>.</p>
+<p><img src="https://miro.medium.com/max/875/1*YFpqMNrfi8pjaU28zpjs0g.png"></p>
+<div class="cell" data-execution="{&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:35.492176Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:35.491064Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:18.737582Z&quot;}" data-trusted="true" data-execution_count="34">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>silhouette_score(clustering_tf_df, dbs_result.labels_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<pre><code>0.8174959664660164</code></pre>
+</div>
+</div>
+<section id="k-prototype-clustering" class="level2">
+<h2 class="anchored" data-anchor-id="k-prototype-clustering">K-prototype clustering</h2>
+<p>In the previous sub-section, we have explored the option of clustering the dataframe by one-hot-encoding. However, this method is not all sensible. The distance metric was arbitrary, although the Mahalanobis distance was used, there is no guarantee that the distance calculated is a good representation of the datapoints clustering (how is the distance between California and England comparable with the distance of $200 difference in revenue?).</p>
+<p>Another method we will be using is the K-Prototypes clustering, which is a combination of K-means and K-modes algorithms.</p>
+<div class="cell" data-execution_count="35">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kmodes.kprototypes <span class="im">import</span> KPrototypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="36">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>clustering_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="36">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Age</th>
+      <th>Customer Gender</th>
+      <th>Product Category</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Country_with_California</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>80.0</td>
+      <td>109.0</td>
+      <td>29</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Clothing</td>
+      <td>49.0</td>
+      <td>57.0</td>
+      <td>8</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>11.0</td>
+      <td>15.0</td>
+      <td>4</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>175.0</td>
+      <td>233.0</td>
+      <td>58</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>29</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>105.0</td>
+      <td>125.0</td>
+      <td>20</td>
+      <td>United States</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="37">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>numeric_scaler <span class="op">=</span> ColumnTransformer([(<span class="st">'std_scaler'</span>, StandardScaler(), </span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                        make_column_selector(dtype_include<span class="op">=</span><span class="st">'number'</span>))], </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>                        remainder <span class="op">=</span> <span class="st">'passthrough'</span>, </span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>                        verbose_feature_names_out<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df <span class="op">=</span> pd.DataFrame(numeric_scaler.fit_transform(clustering_df),  </span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>                                    columns <span class="op">=</span> numeric_scaler.get_feature_names_out()).<span class="bu">apply</span>(<span class="kw">lambda</span> x: pd.to_numeric(x, errors<span class="op">=</span><span class="st">'ignore'</span>))</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="37">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Age</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Customer Gender</th>
+      <th>Product Category</th>
+      <th>Country_with_California</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.664363</td>
+      <td>-0.718337</td>
+      <td>-0.722022</td>
+      <td>-0.234603</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.664363</td>
+      <td>-0.763232</td>
+      <td>-0.792612</td>
+      <td>-0.371968</td>
+      <td>F</td>
+      <td>Clothing</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.664363</td>
+      <td>-0.818265</td>
+      <td>-0.849628</td>
+      <td>-0.398132</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.664363</td>
+      <td>-0.580753</td>
+      <td>-0.553690</td>
+      <td>-0.044909</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.664363</td>
+      <td>-0.682130</td>
+      <td>-0.700301</td>
+      <td>-0.293473</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>34861</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.148634</td>
+      <td>-4.100438</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+    </tr>
+    <tr>
+      <th>34862</th>
+      <td>0.145518</td>
+      <td>2.525734</td>
+      <td>1.805672</td>
+      <td>-2.707167</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+    </tr>
+    <tr>
+      <th>34863</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.278956</td>
+      <td>-3.472485</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+    </tr>
+    <tr>
+      <th>34864</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.413350</td>
+      <td>-2.824908</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+    </tr>
+    <tr>
+      <th>34865</th>
+      <td>0.145518</td>
+      <td>2.525734</td>
+      <td>1.258593</td>
+      <td>-5.343261</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+    </tr>
+  </tbody>
+</table>
+<p>34866 rows × 7 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="38">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 34866 entries, 0 to 34865
+Data columns (total 7 columns):
+ #   Column                   Non-Null Count  Dtype  
+---  ------                   --------------  -----  
+ 0   Customer Age             34866 non-null  float64
+ 1   Cost                     34866 non-null  float64
+ 2   Revenue                  34866 non-null  float64
+ 3   net_profit               34866 non-null  float64
+ 4   Customer Gender          34866 non-null  object 
+ 5   Product Category         34866 non-null  object 
+ 6   Country_with_California  34866 non-null  object 
+dtypes: float64(4), object(3)
+memory usage: 1.9+ MB</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="39">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>cat_position <span class="op">=</span> [clustering_scaled_df.columns.get_loc(col) <span class="cf">for</span> col <span class="kw">in</span> </span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>                    clustering_scaled_df.select_dtypes(<span class="st">'object'</span>).columns]</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>cat_position</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<pre><code>[4, 5, 6]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="40">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df.select_dtypes(<span class="st">'object'</span>).columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<pre><code>Index(['Customer Gender', 'Product Category', 'Country_with_California'], dtype='object')</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="41">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># kproto = KPrototypes()</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="co"># kproto.fit_predict(clustering_scaled_df, categorical = cat_position )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="41">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>kproto.cost_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-error">
+<pre><code>NameError: name 'kproto' is not defined</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="45">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>kproto_results <span class="op">=</span>{<span class="st">'cluster_size'</span>: [], <span class="st">'cost'</span>:[]} </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df_sample <span class="op">=</span> clustering_scaled_df.sample(frac<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cluster_size <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">8</span>):</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Fitting Kprototypes for cluster size :</span><span class="sc">{</span>cluster_size<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    _kproto <span class="op">=</span> KPrototypes(n_clusters<span class="op">=</span>cluster_size)</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>    _labels <span class="op">=</span> _kproto.fit_predict(clustering_scaled_df_sample, categorical <span class="op">=</span> cat_position)</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>    kproto_results[<span class="st">'cluster_size'</span>].append(cluster_size)</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>    kproto_results[<span class="st">'cost'</span>].append(_kproto.cost_)</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Cost: </span><span class="sc">{</span>_kproto<span class="sc">.</span>cost_<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'----------------------------------------'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fitting Kprototypes for cluster size :1
+Cost: 81947.90456327623
+----------------------------------------
+Fitting Kprototypes for cluster size :2
+Cost: 54558.85795930906
+----------------------------------------
+Fitting Kprototypes for cluster size :3
+Cost: 44219.11078464947
+----------------------------------------
+Fitting Kprototypes for cluster size :4
+Cost: 35877.56991156543
+----------------------------------------
+Fitting Kprototypes for cluster size :5
+Cost: 31335.38134042823
+----------------------------------------
+Fitting Kprototypes for cluster size :6
+Cost: 28857.25619255692
+----------------------------------------
+Fitting Kprototypes for cluster size :7
+Cost: 26973.43389824587
+----------------------------------------</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="47">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import pickle</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="co"># import os</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="co"># with open('kproto_result.pkl', 'wb') as file:</span></span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     # assert not os.path.getsize(file) &gt; 0, f"{file} already exists! Prone to overwriting."</span></span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     pickle.dump(kproto_results, file=file)</span></span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="48">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">'./kproto_result.pkl'</span>, <span class="st">'rb'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>    kproto_results <span class="op">=</span> pickle.load(<span class="bu">file</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="49">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>plt.plot(kproto_results[<span class="st">'cluster_size'</span>], kproto_results[<span class="st">'cost'</span>])</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Elbow graph for Kprototypes clustering'</span>)</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Cluster size'</span>)</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cost value'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="49">
+<pre><code>Text(0, 0.5, 'Cost value')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-47-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="42">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>kproto_best <span class="op">=</span> KPrototypes(<span class="dv">5</span>, random_state<span class="op">=</span><span class="dv">43</span>)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>kproto_best_label <span class="op">=</span> kproto_best.fit_predict(clustering_scaled_df, categorical <span class="op">=</span> cat_position)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df[<span class="st">'kproto_labels'</span>] <span class="op">=</span> kproto_best_label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="43">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="43">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Age</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Customer Gender</th>
+      <th>Product Category</th>
+      <th>Country_with_California</th>
+      <th>kproto_labels</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.664363</td>
+      <td>-0.718337</td>
+      <td>-0.722022</td>
+      <td>-0.234603</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.664363</td>
+      <td>-0.763232</td>
+      <td>-0.792612</td>
+      <td>-0.371968</td>
+      <td>F</td>
+      <td>Clothing</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.664363</td>
+      <td>-0.818265</td>
+      <td>-0.849628</td>
+      <td>-0.398132</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.664363</td>
+      <td>-0.580753</td>
+      <td>-0.553690</td>
+      <td>-0.044909</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.664363</td>
+      <td>-0.682130</td>
+      <td>-0.700301</td>
+      <td>-0.293473</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>34861</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.148634</td>
+      <td>-4.100438</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34862</th>
+      <td>0.145518</td>
+      <td>2.525734</td>
+      <td>1.805672</td>
+      <td>-2.707167</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34863</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.278956</td>
+      <td>-3.472485</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34864</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.413350</td>
+      <td>-2.824908</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34865</th>
+      <td>0.145518</td>
+      <td>2.525734</td>
+      <td>1.258593</td>
+      <td>-5.343261</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>34866 rows × 8 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="44">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>clustering_ohe_df <span class="op">=</span> ct.fit_transform(clustering_df)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>clustering_ohe_df <span class="op">=</span> pd.DataFrame(clustering_ohe_df, columns <span class="op">=</span> ct.get_feature_names_out())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="45">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>clustering_ohe_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="45">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Gender_F</th>
+      <th>Customer Gender_M</th>
+      <th>Country_with_California_California</th>
+      <th>Country_with_California_France</th>
+      <th>Country_with_California_Germany</th>
+      <th>Country_with_California_United Kingdom</th>
+      <th>Country_with_California_United States</th>
+      <th>Product Category_Accessories</th>
+      <th>Product Category_Bikes</th>
+      <th>Product Category_Clothing</th>
+      <th>Customer Age</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>29.0</td>
+      <td>80.0</td>
+      <td>109.0</td>
+      <td>29.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>29.0</td>
+      <td>49.0</td>
+      <td>57.0</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>29.0</td>
+      <td>11.0</td>
+      <td>15.0</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>29.0</td>
+      <td>175.0</td>
+      <td>233.0</td>
+      <td>58.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>29.0</td>
+      <td>105.0</td>
+      <td>125.0</td>
+      <td>20.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="46">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>clustering_pca <span class="op">=</span> PCA(<span class="dv">2</span>)</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>clustering_ohe_pca_df <span class="op">=</span> clustering_pca.fit_transform(clustering_ohe_df)</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>clustering_ohe_pca_df <span class="op">=</span> pd.DataFrame(clustering_ohe_pca_df, </span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>                                    columns <span class="op">=</span> clustering_pca.get_feature_names_out())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="47">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>clustering_ohe_pca_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="47">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>pca0</th>
+      <th>pca1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-728.143905</td>
+      <td>-1.451126</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-788.234011</td>
+      <td>-23.703172</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-844.992284</td>
+      <td>-25.293388</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-571.479188</td>
+      <td>24.971618</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-699.844978</td>
+      <td>-14.146409</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="48">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>clustering_ohe_pca_df[<span class="st">'cluster'</span>] <span class="op">=</span> kproto_best_label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="49">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(clustering_ohe_pca_df, x<span class="op">=</span><span class="st">'pca0'</span>, y<span class="op">=</span><span class="st">'pca1'</span>, hue <span class="op">=</span> <span class="st">'cluster'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="49">
+<pre><code>&lt;AxesSubplot: xlabel='pca0', ylabel='pca1'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-55-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="50">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>clustering_ohe_df[<span class="st">'cluster'</span>] <span class="op">=</span> kproto_best_label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="51">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>clustering_ohe_df.groupby(<span class="st">'cluster'</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="51">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Gender_F</th>
+      <th>Customer Gender_M</th>
+      <th>Country_with_California_California</th>
+      <th>Country_with_California_France</th>
+      <th>Country_with_California_Germany</th>
+      <th>Country_with_California_United Kingdom</th>
+      <th>Country_with_California_United States</th>
+      <th>Product Category_Accessories</th>
+      <th>Product Category_Bikes</th>
+      <th>Product Category_Clothing</th>
+      <th>Customer Age</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+    </tr>
+    <tr>
+      <th>cluster</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.560676</td>
+      <td>0.439324</td>
+      <td>0.338068</td>
+      <td>0.122899</td>
+      <td>0.107246</td>
+      <td>0.172367</td>
+      <td>0.259420</td>
+      <td>0.796522</td>
+      <td>0.063768</td>
+      <td>0.139710</td>
+      <td>47.984638</td>
+      <td>230.139227</td>
+      <td>261.949855</td>
+      <td>31.810628</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.485354</td>
+      <td>0.514646</td>
+      <td>0.340378</td>
+      <td>0.170560</td>
+      <td>0.021505</td>
+      <td>0.239896</td>
+      <td>0.227660</td>
+      <td>0.001483</td>
+      <td>0.952169</td>
+      <td>0.046348</td>
+      <td>37.150908</td>
+      <td>2166.809047</td>
+      <td>2041.329996</td>
+      <td>-125.479051</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.450244</td>
+      <td>0.549756</td>
+      <td>0.294088</td>
+      <td>0.161551</td>
+      <td>0.132099</td>
+      <td>0.189254</td>
+      <td>0.223008</td>
+      <td>0.771889</td>
+      <td>0.086170</td>
+      <td>0.141941</td>
+      <td>28.147263</td>
+      <td>205.310418</td>
+      <td>227.842458</td>
+      <td>22.532041</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.523350</td>
+      <td>0.476650</td>
+      <td>0.136548</td>
+      <td>0.186802</td>
+      <td>0.449239</td>
+      <td>0.127919</td>
+      <td>0.099492</td>
+      <td>0.100000</td>
+      <td>0.695431</td>
+      <td>0.204569</td>
+      <td>37.460406</td>
+      <td>1975.811168</td>
+      <td>2433.172081</td>
+      <td>457.360914</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.447162</td>
+      <td>0.552838</td>
+      <td>0.262883</td>
+      <td>0.138943</td>
+      <td>0.217873</td>
+      <td>0.186236</td>
+      <td>0.194064</td>
+      <td>0.570939</td>
+      <td>0.214123</td>
+      <td>0.214938</td>
+      <td>34.539465</td>
+      <td>839.621331</td>
+      <td>1012.600130</td>
+      <td>172.978800</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="52">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>clustering_scaled_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="52">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Age</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Customer Gender</th>
+      <th>Product Category</th>
+      <th>Country_with_California</th>
+      <th>kproto_labels</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.664363</td>
+      <td>-0.718337</td>
+      <td>-0.722022</td>
+      <td>-0.234603</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.664363</td>
+      <td>-0.763232</td>
+      <td>-0.792612</td>
+      <td>-0.371968</td>
+      <td>F</td>
+      <td>Clothing</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.664363</td>
+      <td>-0.818265</td>
+      <td>-0.849628</td>
+      <td>-0.398132</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.664363</td>
+      <td>-0.580753</td>
+      <td>-0.553690</td>
+      <td>-0.044909</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.664363</td>
+      <td>-0.682130</td>
+      <td>-0.700301</td>
+      <td>-0.293473</td>
+      <td>F</td>
+      <td>Accessories</td>
+      <td>United States</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>34861</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.148634</td>
+      <td>-4.100438</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34862</th>
+      <td>0.145518</td>
+      <td>2.525734</td>
+      <td>1.805672</td>
+      <td>-2.707167</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34863</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.278956</td>
+      <td>-3.472485</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34864</th>
+      <td>0.145518</td>
+      <td>2.133260</td>
+      <td>1.413350</td>
+      <td>-2.824908</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>34865</th>
+      <td>0.145518</td>
+      <td>2.525734</td>
+      <td>1.258593</td>
+      <td>-5.343261</td>
+      <td>M</td>
+      <td>Bikes</td>
+      <td>France</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>34866 rows × 8 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="53">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">15</span>))</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>clustering_ohe_df.groupby(<span class="st">'cluster'</span>).mean().T.plot(kind <span class="op">=</span> <span class="st">'barh'</span>, figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="53">
+<pre><code>&lt;AxesSubplot: &gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 800x1500 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-59-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="69">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>cluster_mean <span class="op">=</span> clustering_ohe_df.groupby(<span class="st">'cluster'</span>).mean()</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>cluster_mean_scaler <span class="op">=</span> MaxAbsScaler()</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>cluster_mean_scaler <span class="op">=</span> ColumnTransformer([(<span class="st">'scaler'</span>, MaxAbsScaler(), [<span class="st">'Customer Age'</span>, <span class="st">'Cost'</span>, <span class="st">'Revenue'</span>, <span class="st">'net_profit'</span>])], </span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>                                        remainder<span class="op">=</span><span class="st">'passthrough'</span>, </span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>                                        verbose_feature_names_out<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>cluster_mean_scaled <span class="op">=</span> pd.DataFrame(cluster_mean_scaler.fit_transform(cluster_mean), </span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>                                    columns <span class="op">=</span> cluster_mean_scaler.get_feature_names_out())</span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>cluster_mean_scaled</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="69">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Customer Age</th>
+      <th>Cost</th>
+      <th>Revenue</th>
+      <th>net_profit</th>
+      <th>Customer Gender_F</th>
+      <th>Customer Gender_M</th>
+      <th>Country_with_California_California</th>
+      <th>Country_with_California_France</th>
+      <th>Country_with_California_Germany</th>
+      <th>Country_with_California_United Kingdom</th>
+      <th>Country_with_California_United States</th>
+      <th>Product Category_Accessories</th>
+      <th>Product Category_Bikes</th>
+      <th>Product Category_Clothing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.000000</td>
+      <td>0.106211</td>
+      <td>0.107658</td>
+      <td>0.069553</td>
+      <td>0.560676</td>
+      <td>0.439324</td>
+      <td>0.338068</td>
+      <td>0.122899</td>
+      <td>0.107246</td>
+      <td>0.172367</td>
+      <td>0.259420</td>
+      <td>0.796522</td>
+      <td>0.063768</td>
+      <td>0.139710</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.774225</td>
+      <td>1.000000</td>
+      <td>0.838958</td>
+      <td>-0.274355</td>
+      <td>0.485354</td>
+      <td>0.514646</td>
+      <td>0.340378</td>
+      <td>0.170560</td>
+      <td>0.021505</td>
+      <td>0.239896</td>
+      <td>0.227660</td>
+      <td>0.001483</td>
+      <td>0.952169</td>
+      <td>0.046348</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.586589</td>
+      <td>0.094752</td>
+      <td>0.093640</td>
+      <td>0.049265</td>
+      <td>0.450244</td>
+      <td>0.549756</td>
+      <td>0.294088</td>
+      <td>0.161551</td>
+      <td>0.132099</td>
+      <td>0.189254</td>
+      <td>0.223008</td>
+      <td>0.771889</td>
+      <td>0.086170</td>
+      <td>0.141941</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.780675</td>
+      <td>0.911853</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.523350</td>
+      <td>0.476650</td>
+      <td>0.136548</td>
+      <td>0.186802</td>
+      <td>0.449239</td>
+      <td>0.127919</td>
+      <td>0.099492</td>
+      <td>0.100000</td>
+      <td>0.695431</td>
+      <td>0.204569</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.719803</td>
+      <td>0.387492</td>
+      <td>0.416165</td>
+      <td>0.378211</td>
+      <td>0.447162</td>
+      <td>0.552838</td>
+      <td>0.262883</td>
+      <td>0.138943</td>
+      <td>0.217873</td>
+      <td>0.186236</td>
+      <td>0.194064</td>
+      <td>0.570939</td>
+      <td>0.214123</td>
+      <td>0.214938</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="70">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>cluster_mean_scaled.T.plot(kind<span class="op">=</span><span class="st">'barh'</span>, figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="70">
+<pre><code>&lt;AxesSubplot: &gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="cycle-sales-kaggle_files/figure-html/cell-61-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The most interesting result from above is the cluster with negative net_profit. From the mean of the analysis, we can see tha the sales were contributed from bike sales, which this cluster also almost contains no sales from Germany.</p>
+<p>Not only that, cluster with really high percent of sales from Germany (cluster 3) has a much higher net_profit, comparing to other clusters.It suggested that bike sales in Germany generates profit, however, bike sales in other countries actually results in loss in profit.</p>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>Further investigation is needed to determine the relation between the types of bikes being sold in Germany, and the profit generated.</p>
+</blockquote>
+</blockquote>
+</section>
+</section>
+<section id="hyperparameter-tuning" class="level1">
+<h1>Hyperparameter tuning</h1>
+<p>Now that we have demonstrated on how to peform clustering by using DBSCAN, we will move on to tuning the hyperparameters, to obtain the clustering with best silhoutte score.</p>
+<p><a href="https://optuna.readthedocs.io/en/stable/">optuna</a> is a hyperparameter framework, which optimizes python loops to exhaust the search space automatically.</p>
+<p>Alternative to Optuna, a function of manaul Python loops can be written, Sklearn GridSearchCV would be incompatible, since clustering algorithm (such as DBSCAN) lacks a <code>.transform()</code> method.</p>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:07:35.494602Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:07:35.494107Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:07:35.939298Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:07:35.938225Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:07:35.494552Z&quot;}" data-trusted="true" data-execution_count="34">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> DistanceMetric</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="35">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>mahala <span class="op">=</span> DistanceMetric.get_metric(<span class="st">'mahalanobis'</span>, V<span class="op">=</span>np.cov(clustering_tf_df.to_numpy().T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/shiya/anaconda3/lib/python3.9/site-packages/sklearn/neighbors/_distance_metric.py:10: FutureWarning: sklearn.neighbors.DistanceMetric has been moved to sklearn.metrics.DistanceMetric in 1.0. This import path will be removed in 1.3
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="36">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>dbs_test <span class="op">=</span> DBSCAN(metric<span class="op">=</span>mahala)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="37">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>np.cov(clustering_tf_df.to_numpy().T).shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>(14, 14)</code></pre>
+</div>
+</div>
+<div class="cell" data-trusted="true" data-execution_count="38">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining variables needed to calculate Malahanobis distance</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>df_cov <span class="op">=</span> np.cov(clustering_tf_df.to_numpy().T)</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>mahala <span class="op">=</span> DistanceMetric.get_metric(<span class="st">'mahalanobis'</span>, V<span class="op">=</span>df_cov)</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> df_cov.shape <span class="op">==</span> (clustering_tf_df.shape[<span class="dv">1</span>],</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>                        clustering_tf_df.shape[<span class="dv">1</span>])</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> objective(trial):</span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a>    _epsilon <span class="op">=</span> trial.suggest_float(<span class="st">'_epsilon'</span>, <span class="fl">0.1</span>, <span class="dv">2</span>)</span>
+<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a>    _min_samples <span class="op">=</span> trial.suggest_int(<span class="st">'_min_samples'</span>, <span class="dv">5</span>, <span class="dv">1000</span>, log<span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb93-11"><a href="#cb93-11" aria-hidden="true" tabindex="-1"></a>    _distance <span class="op">=</span> trial.suggest_categorical(<span class="st">'_distance'</span>, [<span class="st">'euclidean'</span>, <span class="st">'manhattan'</span>, <span class="st">'mahalanobis'</span>])</span>
+<span id="cb93-12"><a href="#cb93-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> _distance <span class="op">==</span> <span class="st">'mahalanobis'</span>:</span>
+<span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>        _dbs <span class="op">=</span> DBSCAN(eps<span class="op">=</span>_epsilon, min_samples<span class="op">=</span>_min_samples, metric<span class="op">=</span>_distance, metric_params<span class="op">=</span>{<span class="st">'V'</span>:df_cov})</span>
+<span id="cb93-14"><a href="#cb93-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb93-15"><a href="#cb93-15" aria-hidden="true" tabindex="-1"></a>        _dbs <span class="op">=</span> DBSCAN(eps<span class="op">=</span>_epsilon, min_samples<span class="op">=</span>_min_samples, metric<span class="op">=</span>_distance)</span>
+<span id="cb93-16"><a href="#cb93-16" aria-hidden="true" tabindex="-1"></a>    _dbs.fit(clustering_tf_df)</span>
+<span id="cb93-17"><a href="#cb93-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb93-18"><a href="#cb93-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> _distance <span class="op">==</span><span class="st">'mahalanobis'</span>:</span>
+<span id="cb93-19"><a href="#cb93-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> silhouette_score(clustering_tf_df, _dbs.labels_, metric<span class="op">=</span>_distance, </span>
+<span id="cb93-20"><a href="#cb93-20" aria-hidden="true" tabindex="-1"></a>                                    <span class="co"># We will reduce the sample_size for calculating silhouette score,</span></span>
+<span id="cb93-21"><a href="#cb93-21" aria-hidden="true" tabindex="-1"></a>                                    <span class="co"># as the calculation is computationally expensive.</span></span>
+<span id="cb93-22"><a href="#cb93-22" aria-hidden="true" tabindex="-1"></a>                                    sample_size <span class="op">=</span> <span class="bu">int</span>(clustering_tf_df.shape[<span class="dv">0</span>]<span class="op">*</span><span class="fl">0.6</span>), random_state <span class="op">=</span> <span class="dv">42</span>, </span>
+<span id="cb93-23"><a href="#cb93-23" aria-hidden="true" tabindex="-1"></a>                                    V<span class="op">=</span>df_cov)</span>
+<span id="cb93-24"><a href="#cb93-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb93-25"><a href="#cb93-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> silhouette_score(clustering_tf_df, _dbs.labels_, metric<span class="op">=</span>_distance, </span>
+<span id="cb93-26"><a href="#cb93-26" aria-hidden="true" tabindex="-1"></a>                                    <span class="co"># We will reduce the sample_size for calculating silhouette score,</span></span>
+<span id="cb93-27"><a href="#cb93-27" aria-hidden="true" tabindex="-1"></a>                                    <span class="co"># as the calculation is computationally expensive.</span></span>
+<span id="cb93-28"><a href="#cb93-28" aria-hidden="true" tabindex="-1"></a>                                    sample_size <span class="op">=</span> <span class="bu">int</span>(clustering_tf_df.shape[<span class="dv">0</span>]<span class="op">*</span><span class="fl">0.6</span>), random_state <span class="op">=</span> <span class="dv">42</span>) </span>
+<span id="cb93-29"><a href="#cb93-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span>:</span>
+<span id="cb93-30"><a href="#cb93-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="39">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>{<span class="dv">1</span>:<span class="dv">2</span> <span class="cf">if</span> <span class="dv">1</span><span class="op">==</span><span class="dv">2</span> <span class="cf">else</span> <span class="va">None</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<pre><code>{1: None}</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2023-01-09T15:32:27.489308Z&quot;,&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:32:27.488902Z&quot;}" data-trusted="true" data-execution_count="40">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>study <span class="op">=</span> optuna.create_study()</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>study.optimize(objective, n_trials <span class="op">=</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>[I 2023-01-10 13:25:27,590] A new study created in memory with name: no-name-32ba69a7-e5f2-454d-8b90-ab59ec87b500
+[I 2023-01-10 13:25:44,155] Trial 0 finished with value: 0.814946872975206 and parameters: {'_epsilon': 0.5027805351030847, '_min_samples': 186, '_distance': 'manhattan'}. Best is trial 0 with value: 0.814946872975206.
+[I 2023-01-10 13:26:01,826] Trial 1 finished with value: 0.8177749586076231 and parameters: {'_epsilon': 0.9198643436595008, '_min_samples': 12, '_distance': 'euclidean'}. Best is trial 0 with value: 0.814946872975206.
+[I 2023-01-10 13:26:41,980] Trial 2 finished with value: 0.0 and parameters: {'_epsilon': 1.9469856504268541, '_min_samples': 54, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:27:02,287] Trial 3 finished with value: 0.8177749586076231 and parameters: {'_epsilon': 0.9101727438238539, '_min_samples': 8, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:29:01,569] Trial 4 finished with value: 0.0 and parameters: {'_epsilon': 1.4401005659378465, '_min_samples': 977, '_distance': 'mahalanobis'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:29:15,005] Trial 5 finished with value: 0.8214571061035977 and parameters: {'_epsilon': 0.7183752183328755, '_min_samples': 7, '_distance': 'manhattan'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:29:29,181] Trial 6 finished with value: 0.4173009767584047 and parameters: {'_epsilon': 0.26446596061849104, '_min_samples': 343, '_distance': 'manhattan'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:29:43,366] Trial 7 finished with value: 0.8210129950984362 and parameters: {'_epsilon': 0.3965381232500622, '_min_samples': 6, '_distance': 'manhattan'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:31:02,961] Trial 8 finished with value: 0.0 and parameters: {'_epsilon': 0.197492312853972, '_min_samples': 13, '_distance': 'mahalanobis'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:31:53,931] Trial 9 finished with value: 0.0 and parameters: {'_epsilon': 1.961822495613669, '_min_samples': 52, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:32:33,007] Trial 10 finished with value: 0.0 and parameters: {'_epsilon': 1.435394077445835, '_min_samples': 45, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:34:41,988] Trial 11 finished with value: 0.0 and parameters: {'_epsilon': 1.6362538856526239, '_min_samples': 810, '_distance': 'mahalanobis'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:36:42,233] Trial 12 finished with value: 0.0 and parameters: {'_epsilon': 1.459836406088828, '_min_samples': 139, '_distance': 'mahalanobis'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:38:56,152] Trial 13 finished with value: 0.0 and parameters: {'_epsilon': 1.989568856780434, '_min_samples': 25, '_distance': 'mahalanobis'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:41:00,214] Trial 14 finished with value: 0.0 and parameters: {'_epsilon': 1.2144730589051462, '_min_samples': 933, '_distance': 'mahalanobis'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:41:53,732] Trial 15 finished with value: 0.0 and parameters: {'_epsilon': 1.7204892382356285, '_min_samples': 94, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:42:18,233] Trial 16 finished with value: 0.8177749586076231 and parameters: {'_epsilon': 1.160346824870316, '_min_samples': 348, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:43:48,357] Trial 17 finished with value: 0.0 and parameters: {'_epsilon': 0.1074399728335147, '_min_samples': 20, '_distance': 'mahalanobis'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:44:42,033] Trial 18 finished with value: 0.0 and parameters: {'_epsilon': 1.7345753520837985, '_min_samples': 26, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.
+[I 2023-01-10 13:45:30,303] Trial 19 finished with value: 0.0 and parameters: {'_epsilon': 1.7910364038031894, '_min_samples': 84, '_distance': 'euclidean'}. Best is trial 2 with value: 0.0.</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:12:52.606176Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:12:52.606582Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:12:52.606413Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:12:52.606395Z&quot;}" data-trusted="true" data-execution_count="41">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>clustering_tf_df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="41">
+<pre><code>(34866, 14)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution="{&quot;iopub.status.busy&quot;:&quot;2023-01-09T15:12:52.608672Z&quot;,&quot;iopub.status.idle&quot;:&quot;2023-01-09T15:12:52.609122Z&quot;,&quot;shell.execute_reply&quot;:&quot;2023-01-09T15:12:52.608949Z&quot;,&quot;shell.execute_reply.started&quot;:&quot;2023-01-09T15:12:52.608930Z&quot;}" data-trusted="true" data-execution_count="42">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dbs_dict = {'epsilon':[], 'min_sample':[], 'sil_score':[]}</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="co"># for ep in np.linspace(0.1, 4, 20):</span></span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     for minsamp in np.logspace(5, 1000, 20):</span></span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a><span class="co">#         for _distance in ['euclidean', 'manhattan']:</span></span>
+<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a><span class="co">#             print(f'Fitting on epsion: {ep}, minimum_sample: {minsamp} with distance: {_distance}')</span></span>
+<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a><span class="co">#             _dbs = DBSCAN(eps=ep, min_samples=minsamp, metric=_distance)</span></span>
+<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a><span class="co">#             _dbs.fit(clustering_tf_df)</span></span>
+<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a><span class="co">#             dbs_dict['epsilon'].append(ep)</span></span>
+<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a><span class="co">#             dbs_dict['min_sample'].append(minsamp)</span></span>
+<span id="cb100-11"><a href="#cb100-11" aria-hidden="true" tabindex="-1"></a><span class="co">#             try:</span></span>
+<span id="cb100-12"><a href="#cb100-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                 sil_score = silhouette_score(clustering_tf_df, _dbs.labels_, metric=_distance, </span></span>
+<span id="cb100-13"><a href="#cb100-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                                             sample_size = int(clustering_tf_df.shape[0]*0.6), random_state = 42)</span></span>
+<span id="cb100-14"><a href="#cb100-14" aria-hidden="true" tabindex="-1"></a><span class="co">#             except:</span></span>
+<span id="cb100-15"><a href="#cb100-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                 sil_score = 0</span></span>
+<span id="cb100-16"><a href="#cb100-16" aria-hidden="true" tabindex="-1"></a><span class="co">#             dbs_dict['sil_score'].append(sil_socre)</span></span>
+<span id="cb100-17"><a href="#cb100-17" aria-hidden="true" tabindex="-1"></a><span class="co">#             print(dbs_dict)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

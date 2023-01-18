@@ -1,0 +1,25 @@
+project:
+  type: website
+  render:
+    - "*.qmd"
+    - "*.ipynb"
+    - "!bike_sales.ipynb"
+
+website:
+  title: "Most interesting blog on Earth!"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/ShiYang1101
+      - icon: twitter
+        href: https://twitter.com
+      - icon: linkedin
+        href: https://linkedin.com/in/shi-yang-lee
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+
+

@@ -1,0 +1,9 @@
+[submodule "posts/sales"]
+	path = posts/sales
+	url = git@github.com:ShiYang1101/cycle_sales.git
+[submodule "posts/music"]
+	path = posts/music
+	url = git@github.com:ShiYang1101/Music_transcription_fastai.git
+[submodule "posts/health/Open_Health_Data_Analysis"]
+	path = posts/health/Open_Health_Data_Analysis
+	url = git@github.com:ShiYang1101/Open_Health_Data_Analysis.git
