@@ -7,3 +7,6 @@
 [submodule "posts/health/Open_Health_Data_Analysis"]
 	path = posts/health/Open_Health_Data_Analysis
 	url = git@github.com:ShiYang1101/Open_Health_Data_Analysis.git
+[submodule "posts/health/Health_Analysis"]
+	path = posts/health/Health_Analysis
+	url = git@github.com:ShiYang1101/ML.git
