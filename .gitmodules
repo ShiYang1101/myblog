@@ -10,3 +10,6 @@
 [submodule "posts/health/Health_Analysis"]
 	path = posts/health/Health_Analysis
 	url = git@github.com:ShiYang1101/ML.git
+[submodule "posts/linkedin/linkedin-scape"]
+	path = posts/linkedin/linkedin-scape
+	url = git@github.com:ShiYang1101/linkedin-scrape

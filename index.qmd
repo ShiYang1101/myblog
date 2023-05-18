@@ -1,20 +1,27 @@
 ---
 title: "My weird data corner"
+description: "Welcome to my blog posts! This page contains a collections of my projects. Feel free to look around and contact me if there is any complains. This website was build by using [Quarto](https://quarto.org/).\\
+ \\
+\\
+
+The pictures used in this website was generated using [Crayon (formerly Dall-E mini)](https://www.craiyon.com/) (huge thanks!)."
 listing:
   contents: 
     - "*.qmd"
     - "*.ipynb"
-    - "!Music_transcription_fastai/"
+    - "!music-transcription/"
+    - "!bike_sales.ipynb"
     - "!about.qmd"
-    - "!Open_Health_Data_Analysis/"
+    - "!Health_Analysis/"
+    - "!linkedin/"
   sort: "date desc"
   type: default
   categories: true
   sort-ui: false
   filter-ui: false
-  max-description-length: 300
+  image-height: 150px
+  max-description-length: 500
 page-layout: full
 title-block-banner: true
 ---
-
 

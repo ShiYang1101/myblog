@@ -1,9 +1,9 @@
 ---
-title: "Health data analysis"
+title: "Health data analysis (Under heavy construction 🚧)"
 subtitle: "Analysis of my own health data. Data collected by using several fitness trackers including Garmin Vivostyle, Fitbit Charge 4, Fitbit Charge 5 and Garming Forerunner 45"
 date: 2022-04-11
 listing:
-  contents: Open_Health_Data_Analysis 
+  contents: Health_Analysis 
   sort: "date desc"
   type: default
   categories: true

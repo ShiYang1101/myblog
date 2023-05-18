@@ -1,0 +1,12 @@
+{
+  "listing": "/posts/music/index.html",
+  "items": [
+    "/posts/music/music-transcription/classic-transcription-kaggle.html",
+    "/posts/music/music-transcription/notebooks/EDA.html",
+    "/posts/music/music-transcription/notebooks/classic_transcription.html",
+    "/posts/music/music-transcription/notebooks/music_transcription_2conv.html",
+    "/posts/music/music-transcription/notebooks/music_transcription_RNN.html",
+    "/posts/music/music-transcription/notebooks/music_transcription_class.html",
+    "/posts/music/music-transcription/notebooks/test.html"
+  ]
+}
